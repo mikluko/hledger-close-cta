@@ -7,12 +7,21 @@ description:
     retained-earnings sweep, layer pinning to a base currency at closing rates,
     and CTA revaluation of live positions (IAS 21 / ASC 830 style).
 license:            MIT
+license-file:       LICENSE
 author:             Mikhail Lukianchenko
 maintainer:         ml@akabos.com
 category:           Finance
 build-type:         Simple
-extra-doc-files:    README.md
+homepage:           https://github.com/mikluko/hledger-close-cta
+bug-reports:        https://github.com/mikluko/hledger-close-cta/issues
+extra-doc-files:
+    CHANGELOG.md
+    README.md
 tested-with:        GHC ==9.10.2
+
+source-repository head
+    type:     git
+    location: https://github.com/mikluko/hledger-close-cta
 
 common warnings
     ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates
@@ -28,10 +37,10 @@ library
         Hledger.CloseCta.Rates
     build-depends:
         base >=4.20 && <5,
-        containers,
+        containers >=0.6 && <0.9,
         hledger-lib ==1.52.*,
-        text,
-        time
+        text >=2.0 && <2.2,
+        time >=1.12 && <1.15
     default-language: GHC2021
 
 executable hledger-close-cta
