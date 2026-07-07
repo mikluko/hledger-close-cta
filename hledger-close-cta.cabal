@@ -1,0 +1,55 @@
+cabal-version:      3.0
+name:               hledger-close-cta
+version:            0.1.0.0
+synopsis:           hledger add-on: year-end closing with currency translation adjustment
+description:
+    Generates a year-end closing journal fragment for multi-currency ledgers:
+    retained-earnings sweep, layer pinning to a base currency at closing rates,
+    and CTA revaluation of live positions (IAS 21 / ASC 830 style).
+license:            MIT
+author:             Mikhail Lukianchenko
+maintainer:         ml@akabos.com
+category:           Finance
+build-type:         Simple
+extra-doc-files:    README.md
+tested-with:        GHC ==9.10.2
+
+common warnings
+    ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates
+                 -Wincomplete-uni-patterns -Wmissing-export-lists
+                 -Wredundant-constraints
+
+library
+    import:           warnings
+    hs-source-dirs:   src
+    exposed-modules:  Hledger.CloseCta
+    build-depends:
+        base >=4.20 && <5,
+        containers,
+        Decimal,
+        hledger ==1.52.*,
+        hledger-lib ==1.52.*,
+        text
+    default-language: GHC2021
+
+executable hledger-close-cta
+    import:           warnings
+    hs-source-dirs:   app
+    main-is:          Main.hs
+    build-depends:
+        base,
+        hledger-close-cta
+    default-language: GHC2021
+
+test-suite hledger-close-cta-test
+    import:           warnings
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    main-is:          Spec.hs
+    build-depends:
+        base,
+        hledger-close-cta,
+        tasty,
+        tasty-golden,
+        tasty-hunit
+    default-language: GHC2021
