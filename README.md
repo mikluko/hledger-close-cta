@@ -78,14 +78,26 @@ before the period end (respectively period start) for each currency.
 
 ## Installation
 
-Requires the `hledger` executable (tested with 1.52) and, to build, GHC
-9.10 with cabal (easiest via [ghcup](https://www.haskell.org/ghcup/)):
+Requires the `hledger` executable (tested with 1.52) for the add-on
+command form to work.
+
+With Homebrew (builds from source, takes a while the first time):
+
+```sh
+brew install mikluko/tap/hledger-close-cta
+```
+
+Or from a source checkout, with GHC 9.10 and cabal (easiest via
+[ghcup](https://www.haskell.org/ghcup/)):
 
 ```sh
 git clone https://github.com/mikluko/hledger-close-cta
 cd hledger-close-cta
 cabal install
 ```
+
+Prebuilt binaries for linux (x86_64, aarch64) and macos (aarch64) are
+attached to [GitHub releases](https://github.com/mikluko/hledger-close-cta/releases).
 
 `cabal install` puts `hledger-close-cta` on your PATH (`~/.cabal/bin` or
 `~/.local/bin`; make sure it is in `$PATH`). hledger discovers any
