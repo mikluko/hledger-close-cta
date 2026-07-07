@@ -81,4 +81,5 @@ resolveOpts raw rspec = do
             , ctaBase = base
             , ctaEarnedAcct = expandAcctTemplate label earnedT
             , ctaRevaluedAcct = expandAcctTemplate label revaluedT
+            , ctaInferRates = infer_prices_ (_rsReportOpts rspec)
             }

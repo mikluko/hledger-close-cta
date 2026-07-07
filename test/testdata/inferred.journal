@@ -1,0 +1,17 @@
+; Rates only partly declared: the HKD position's start-of-holding rate
+; exists only as a transaction cost, usable with --infer-market-prices.
+
+account Assets:Bank:Checking      ; type:A
+account Assets:Cash:HongKong      ; type:A
+account Income:Salary             ; type:R
+account Equity                    ; type:E
+
+P 2024-12-30 HKD 0.128500 USD
+
+2024-01-31 * Salary
+    Assets:Bank:Checking          3000.00 USD
+    Income:Salary
+
+2024-07-01 * HK dollars bought
+    Assets:Cash:HongKong          4000.00 HKD @ 0.128000 USD
+    Assets:Bank:Checking

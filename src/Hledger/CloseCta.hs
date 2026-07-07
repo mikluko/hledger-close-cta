@@ -163,7 +163,11 @@ closeCta opts j
     -- the period end; the old rate falls back to the first rate seen
     -- after the previous period, for commodities that appeared during
     -- this one.
-    ratesFor c = directRates j c base
+    ratesFor c = directRates (jpricedirectives j) inferred c base
+      where
+        inferred
+            | ctaInferRates opts = jinferredmarketprices j
+            | otherwise = []
     newRateMay c = rateOnOrBefore newCutoff (ratesFor c)
     newRate c =
         fromMaybe

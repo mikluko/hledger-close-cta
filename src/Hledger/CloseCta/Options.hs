@@ -29,6 +29,8 @@ data CtaOpts = CtaOpts
     -- ^ equity account receiving the retained-earnings sweep
     , ctaRevaluedAcct :: AccountName
     -- ^ equity account receiving the CTA revaluation
+    , ctaInferRates :: Bool
+    -- ^ also use market prices inferred from transaction costs
     }
     deriving (Show, Eq)
 

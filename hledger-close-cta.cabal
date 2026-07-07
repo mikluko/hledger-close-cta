@@ -28,6 +28,7 @@ library
         Hledger.CloseCta.Rates
     build-depends:
         base >=4.20 && <5,
+        containers,
         hledger-lib ==1.52.*,
         text,
         time

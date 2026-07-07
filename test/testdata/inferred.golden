@@ -1,0 +1,9 @@
+2025-01-01 retain earnings  ; retain:
+    Income:Salary                      3000.00 USD
+    Equity:Accumulated:2024:Earned
+
+2025-01-01 * Currency translation of live positions, 2024 (unrealized)
+    Equity:Accumulated:2024:Revalued    4000.00 HKD @ 0.128500 USD
+    Equity:Accumulated:2024:Revalued      -4000.00 HKD @ 0.128 USD
+    Equity:Accumulated:2024:Revalued
+

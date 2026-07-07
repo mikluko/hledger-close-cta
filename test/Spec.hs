@@ -27,6 +27,7 @@ main =
             , invariantTests
             , signTests
             , sequentialTest
+            , inferredRateTests
             ]
 
 testdata :: FilePath
@@ -41,6 +42,7 @@ yearOpts y =
         , ctaBase = "USD"
         , ctaEarnedAcct = expandAcctTemplate label earnedAcctTemplate
         , ctaRevaluedAcct = expandAcctTemplate label revaluedAcctTemplate
+        , ctaInferRates = False
         }
   where
     label = T.pack (show y)
@@ -84,6 +86,52 @@ valueAt j d =
 usdComponent :: MixedAmount -> Quantity
 usdComponent ma =
     sum [aquantity b | b <- amounts (mixedAmountStripCosts ma), acommodity b == "USD"]
+
+-- * Inferred market prices (--infer-market-prices)
+
+inferredRateTests :: TestTree
+inferredRateTests =
+    testGroup
+        "inferred rates"
+        [ testCase "declared P beats inferred cost on the same day" $ do
+            let declared =
+                    PriceDirective
+                        { pdsourcepos = nullsourcepos
+                        , pddate = fromGregorian 2024 12 30
+                        , pdcommodity = "HKD"
+                        , pdamount = nullamt{acommodity = "USD", aquantity = 0.13}
+                        }
+                inferred =
+                    MarketPrice
+                        { mpdate = fromGregorian 2024 12 30
+                        , mpfrom = "HKD"
+                        , mpto = "USD"
+                        , mprate = 0.129
+                        }
+            map (fmap aquantity) (directRates [declared] [inferred] "HKD" "USD")
+                @?= [(fromGregorian 2024 12 30, 0.13)]
+        , testCase "inferred rates fill days without P directives" $ do
+            let inferred =
+                    MarketPrice
+                        { mpdate = fromGregorian 2024 7 1
+                        , mpfrom = "HKD"
+                        , mpto = "USD"
+                        , mprate = 0.128
+                        }
+            map (fmap aquantity) (directRates [] [inferred] "HKD" "USD")
+                @?= [(fromGregorian 2024 7 1, 0.128)]
+        , golden "inferred" ((yearOpts 2024){ctaInferRates = True})
+        , golden "inferred-only" ((yearOpts 2024){ctaInferRates = True})
+        , testCase "without the flag, cost-only rates are missing" $ do
+            j <- readFixture "inferred-only.journal"
+            closeCta (yearOpts 2024) j
+                @?= Left (MissingRates [("HKD", fromGregorian 2024 12 31)])
+        ]
+  where
+    golden name opts =
+        goldenVsString name (testdata </> name <.> "golden") $ do
+            j <- readFixture (name <.> "journal")
+            LBS.fromStrict . T.encodeUtf8 <$> runCta opts j
 
 -- * Rate selection
 

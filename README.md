@@ -101,6 +101,7 @@ hledger close-cta -- --help     # note the -- before add-on flags
 ```
 hledger close-cta [-f FILE] [-b/-e/-p PERIOD] [--base CUR]
                   [--earned-acct TPL] [--revalued-acct TPL]
+                  [--infer-market-prices]
 ```
 
 - Period: the standard hledger `-b`/`-e`/`-p` options; close a year, a
@@ -109,19 +110,23 @@ hledger close-cta [-f FILE] [-b/-e/-p PERIOD] [--base CUR]
 - Account templates default to `Equity:Accumulated:{period}:Earned` and
   `Equity:Accumulated:{period}:Revalued`, where `{period}` is hledger's
   period label (`2024`, `2024Q3`, ...).
+- `--infer-market-prices`: like the hledger option of the same name, also
+  take rates from transaction costs (`@`/`@@`), so a purchase can supply
+  the rate for a currency that has no `P` directive yet. A `P` directive
+  wins over a cost-inferred rate on the same day.
 
 ### Example
 
-[`examples/personal.journal`](examples/personal.journal) is a year of
+[`examples/2024.journal`](examples/2024.journal) is a year of
 multi-currency activity: salary in USD, freelance income and expenses in
 JPY, cash savings in HKD, travel money in MNT, with `P` rates at the
 start and end of 2024.
 
 ```sh
-hledger close-cta -f examples/personal.journal -p 2024 --base USD
+hledger close-cta -f examples/2024.journal -p 2024 --base USD
 ```
 
-prints ([`examples/closing-2024.journal`](examples/closing-2024.journal)):
+prints ([`examples/2024-closing.journal`](examples/2024-closing.journal)):
 
 ```ledger
 2025-01-01 retain earnings  ; retain:
@@ -164,7 +169,7 @@ Append the output to the journal (or include it as a separate file) and
 valued reports become stable:
 
 ```sh
-hledger -f examples/personal.journal -f examples/closing-2024.journal \
+hledger -f examples/2024.journal -f examples/2024-closing.journal \
     bal Equity:Accumulated -X USD --infer-market-prices -e 2025-06-30
 # same numbers at -e 2025-12-31, or any later date
 ```
