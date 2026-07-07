@@ -1,0 +1,77 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  binaries:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-linux
+          - os: ubuntu-24.04-arm
+            target: aarch64-linux
+          - os: macos-latest
+            target: aarch64-darwin
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: haskell-actions/setup@v2
+        id: setup
+        with:
+          ghc-version: "9.10.2"
+          cabal-version: "3.16.1.0"
+
+      - name: Configure
+        run: cabal configure --enable-optimization=2
+
+      - name: Compute dependency plan
+        run: cabal build --dry-run
+
+      - name: Restore dependency cache
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ steps.setup.outputs.cabal-store }}
+          key: release-${{ matrix.target }}-ghc-${{ steps.setup.outputs.ghc-version }}-${{ hashFiles('dist-newstyle/cache/plan.json') }}
+          restore-keys: release-${{ matrix.target }}-ghc-${{ steps.setup.outputs.ghc-version }}-
+
+      - name: Build
+        run: cabal build exe:hledger-close-cta
+
+      - name: Package
+        run: |
+          bin=$(cabal list-bin hledger-close-cta)
+          strip "$bin"
+          name=hledger-close-cta-${GITHUB_REF_NAME#v}-${{ matrix.target }}
+          mkdir "$name"
+          cp "$bin" LICENSE README.md CHANGELOG.md "$name"/
+          tar czf "$name.tar.gz" "$name"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.target }}
+          path: "*.tar.gz"
+
+  release:
+    needs: binaries
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          merge-multiple: true
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes \
+            *.tar.gz
