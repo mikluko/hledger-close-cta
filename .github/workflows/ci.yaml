@@ -52,12 +52,18 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Set up hlint
+        # SHA-pinned to unreleased node24 commit; move back to a version tag once v2.4.11+ is released
+        uses: haskell-actions/hlint-setup@8887da9acdd3617d08f9e3380197162670ce3e57
+        with:
+          version: "3.10"
+
       - name: hlint
-        env:
-          HLINT_VERSION: "3.10"
-        run: |
-          curl -sSL "https://github.com/ndmitchell/hlint/releases/download/v${HLINT_VERSION}/hlint-${HLINT_VERSION}-x86_64-linux.tar.gz" | tar xz
-          "./hlint-${HLINT_VERSION}/hlint" src app test
+        # SHA-pinned to unreleased node24 commit; move back to a version tag once v2.4.11+ is released
+        uses: haskell-actions/hlint-run@73321785d134854dd302a7068a5f926aa24f63bf
+        with:
+          path: '["src/", "app/", "test/"]'
+          fail-on: warning
 
       - name: fourmolu
         uses: haskell-actions/run-fourmolu@v13
