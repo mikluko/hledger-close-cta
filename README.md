@@ -87,7 +87,7 @@ With Homebrew (builds from source, takes a while the first time):
 brew install mikluko/tap/hledger-close-cta
 ```
 
-Or from a source checkout, with GHC 9.10 and cabal (easiest via
+Or from a source checkout, with GHC 9.12 and cabal (easiest via
 [ghcup](https://www.haskell.org/ghcup/)):
 
 ```sh
