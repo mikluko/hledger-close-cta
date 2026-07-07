@@ -52,6 +52,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Set up hlint
+        uses: haskell-actions/hlint-setup@v2
+
       - name: hlint
         uses: haskell-actions/hlint-run@v2
         with:
