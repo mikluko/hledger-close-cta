@@ -1,0 +1,41 @@
+; Example multi-currency personal ledger, base currency USD.
+; A year of activity in three currencies: USD salary, RSD freelance
+; income and expenses, EUR cash savings.
+
+account Assets:Bank:Checking      ; type:A
+account Assets:Bank:Dinars        ; type:A
+account Assets:Cash:Euros         ; type:A
+account Income:Salary             ; type:R
+account Income:Freelance          ; type:R
+account Expenses:Rent             ; type:X
+account Expenses:Groceries        ; type:X
+account Equity:Accumulated        ; type:E
+
+P 2024-01-02 RSD 0.009200 USD
+P 2024-01-02 EUR 1.094000 USD
+P 2024-12-30 RSD 0.009300 USD
+P 2024-12-30 EUR 1.035000 USD
+
+; Rates keep moving after the close; the pinned layers must not.
+P 2025-06-30 RSD 0.008900 USD
+P 2025-06-30 EUR 1.120000 USD
+
+2024-01-31 * Salary
+    Assets:Bank:Checking          3000.00 USD
+    Income:Salary
+
+2024-02-15 * Freelance invoice, paid in dinars
+    Assets:Bank:Dinars          240000.00 RSD
+    Income:Freelance
+
+2024-03-01 * Rent
+    Expenses:Rent                85000.00 RSD
+    Assets:Bank:Dinars
+
+2024-06-10 * Groceries
+    Expenses:Groceries           15000.00 RSD
+    Assets:Bank:Dinars
+
+2024-07-01 * Cash euros put aside
+    Assets:Cash:Euros              500.00 EUR @ 1.082000 USD
+    Assets:Bank:Checking
