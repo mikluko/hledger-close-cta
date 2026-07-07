@@ -1,0 +1,12 @@
+; Short position (foreign-currency debt), falling rate: unrealized gain.
+
+account Liabilities:Loan   ; type:L
+account Expenses:Stuff     ; type:X
+account Equity             ; type:E
+
+P 2024-01-02 XYZ 1.500000 USD
+P 2024-12-30 XYZ 1.000000 USD
+
+2024-06-01 * Borrowed and spent
+    Expenses:Stuff             1000.00 XYZ
+    Liabilities:Loan

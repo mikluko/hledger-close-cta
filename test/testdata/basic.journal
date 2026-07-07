@@ -1,6 +1,3 @@
-; Example multi-currency personal ledger, base currency USD.
-; A year of activity in four currencies: USD salary, JPY freelance
-; income and expenses, HKD cash savings, MNT travel money.
 
 account Assets:Bank:Checking      ; type:A
 account Assets:Bank:Tokyo         ; type:A

@@ -22,14 +22,15 @@ common warnings
 library
     import:           warnings
     hs-source-dirs:   src
-    exposed-modules:  Hledger.CloseCta
+    exposed-modules:
+        Hledger.CloseCta
+        Hledger.CloseCta.Options
+        Hledger.CloseCta.Rates
     build-depends:
         base >=4.20 && <5,
-        containers,
-        Decimal,
-        hledger ==1.52.*,
         hledger-lib ==1.52.*,
-        text
+        text,
+        time
     default-language: GHC2021
 
 executable hledger-close-cta
@@ -38,7 +39,10 @@ executable hledger-close-cta
     main-is:          Main.hs
     build-depends:
         base,
-        hledger-close-cta
+        hledger ==1.52.*,
+        hledger-close-cta,
+        hledger-lib,
+        text
     default-language: GHC2021
 
 test-suite hledger-close-cta-test
@@ -48,8 +52,14 @@ test-suite hledger-close-cta-test
     main-is:          Spec.hs
     build-depends:
         base,
+        bytestring,
+        filepath,
         hledger-close-cta,
+        hledger-lib,
         tasty,
         tasty-golden,
-        tasty-hunit
+        tasty-hunit,
+        text,
+        time,
+        transformers
     default-language: GHC2021

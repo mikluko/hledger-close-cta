@@ -1,0 +1,22 @@
+; Two years of activity; year one gets closed, then year two.
+
+account Assets:Bank      ; type:A
+account Income:Salary    ; type:R
+account Expenses:Rent    ; type:X
+account Equity           ; type:E
+
+P 2024-01-05 RSD 0.009200 USD
+P 2024-12-30 RSD 0.009300 USD
+P 2025-12-30 RSD 0.009500 USD
+
+2024-03-01 * Salary
+    Assets:Bank             100000.00 RSD
+    Income:Salary
+
+2025-03-01 * Salary
+    Assets:Bank              50000.00 RSD
+    Income:Salary
+
+2025-04-01 * Rent
+    Expenses:Rent            20000.00 RSD
+    Assets:Bank

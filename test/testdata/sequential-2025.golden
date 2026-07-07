@@ -1,0 +1,14 @@
+2026-01-01 retain earnings  ; retain:
+    Expenses:Rent                     -20000.00 RSD
+    Income:Salary                      50000.00 RSD
+    Equity:Accumulated:2025:Earned
+
+2026-01-01 * Pin 2025 layer to base currency
+    Equity:Accumulated:2025:Earned    30000.00 RSD @ 0.009500 USD
+    Equity:Accumulated:2025:Earned
+
+2026-01-01 * Currency translation of live positions, 2025 (unrealized)
+    Equity:Accumulated:2025:Revalued     130000.00 RSD @ 0.009500 USD
+    Equity:Accumulated:2025:Revalued    -130000.00 RSD @ 0.009300 USD
+    Equity:Accumulated:2025:Revalued
+

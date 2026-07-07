@@ -1,0 +1,13 @@
+2025-01-01 retain earnings  ; retain:
+    Expenses:Stuff                    -1000.00 XYZ
+    Equity:Accumulated:2024:Earned
+
+2025-01-01 * Pin 2024 layer to base currency
+    Equity:Accumulated:2024:Earned    -1000.00 XYZ @ 1.500000 USD
+    Equity:Accumulated:2024:Earned
+
+2025-01-01 * Currency translation of live positions, 2024 (unrealized)
+    Equity:Accumulated:2024:Revalued    -1000.00 XYZ @ 1.500000 USD
+    Equity:Accumulated:2024:Revalued     1000.00 XYZ @ 1.000000 USD
+    Equity:Accumulated:2024:Revalued
+

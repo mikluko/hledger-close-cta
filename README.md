@@ -13,8 +13,8 @@ retained-earnings equity account, keeping the original commodities. In a
 single-currency ledger that is fine. In a multi-currency ledger it quietly
 breaks the balance sheet:
 
-1. A retained layer like `{−122 082 USD, +6 385 013 RSD, +28 157 EUR}` is a
-   record of closed, realized flows. The dinars were spent, the dollars were
+1. A retained layer like `{−122 082 USD, +8 512 400 JPY, +3 150 000 MNT}` is
+   a record of closed, realized flows. The yen were spent, the dollars were
    earned; nothing about that history can change anymore. Yet every valued
    report (`-V`, `-X USD`) re-converts those dead components at *today's*
    rates. The layer "breathes": a layer worth $19 440 in January can display
@@ -114,7 +114,8 @@ hledger close-cta [-f FILE] [-b/-e/-p PERIOD] [--base CUR]
 
 [`examples/personal.journal`](examples/personal.journal) is a year of
 multi-currency activity: salary in USD, freelance income and expenses in
-RSD, cash savings in EUR, with `P` rates at the start and end of 2024.
+JPY, cash savings in HKD, travel money in MNT, with `P` rates at the
+start and end of 2024.
 
 ```sh
 hledger close-cta -f examples/personal.journal -p 2024 --base USD
@@ -124,34 +125,40 @@ prints ([`examples/closing-2024.journal`](examples/closing-2024.journal)):
 
 ```ledger
 2025-01-01 retain earnings  ; retain:
-    Expenses:Groceries                  -15000.00 RSD
-    Expenses:Rent                       -85000.00 RSD
-    Income:Freelance                    240000.00 RSD
-    Income:Salary                         3000.00 USD
+    Expenses:Rent                      -400000 JPY
+    Expenses:Groceries                  -80000 JPY
+    Expenses:Travel                    -900000 MNT
+    Income:Salary                      3000.00 USD
+    Income:Freelance                   1200000 JPY
     Equity:Accumulated:2024:Earned
 
 2025-01-01 * Pin 2024 layer to base currency
-    Equity:Accumulated:2024:Earned      140000.00 RSD @ 0.009300 USD
+    Equity:Accumulated:2024:Earned     720000 JPY @ 0.006400 USD
+    Equity:Accumulated:2024:Earned    -900000 MNT @ 0.000285 USD
     Equity:Accumulated:2024:Earned
 
 2025-01-01 * Currency translation of live positions, 2024 (unrealized)
-    Equity:Accumulated:2024:Revalued    140000.00 RSD @ 0.009300 USD
-    Equity:Accumulated:2024:Revalued   -140000.00 RSD @ 0.009200 USD
-    Equity:Accumulated:2024:Revalued       500.00 EUR @ 1.035000 USD
-    Equity:Accumulated:2024:Revalued      -500.00 EUR @ 1.094000 USD
+    Equity:Accumulated:2024:Revalued     4000.00 HKD @ 0.128500 USD
+    Equity:Accumulated:2024:Revalued    -4000.00 HKD @ 0.128000 USD
+    Equity:Accumulated:2024:Revalued      720000 JPY @ 0.006400 USD
+    Equity:Accumulated:2024:Revalued     -720000 JPY @ 0.007100 USD
+    Equity:Accumulated:2024:Revalued      600000 MNT @ 0.000285 USD
+    Equity:Accumulated:2024:Revalued     -600000 MNT @ 0.000290 USD
     Equity:Accumulated:2024:Revalued
 ```
 
 Reading it back:
 
 - The sweep zeroes the year's income and expenses; the layer receives
-  their net (140 000 RSD and 3 000 USD earned).
-- The pin converts the layer's dinars to dollars at the closing rate;
-  the implicit leg makes the layer a constant −4 302 USD from now on.
+  their net: 720 000 JPY and 3 000 USD earned, 900 000 MNT spent.
+- The pin converts the layer's yen and tugrik to dollars at the closing
+  rates; the implicit leg makes the layer a constant −7 351.50 USD from
+  now on.
 - The revaluation books the year's FX movement on what is still held:
-  140 000 RSD gained a little (rate 0.0092 → 0.0093), 500 EUR lost more
-  (1.094 → 1.035); net unrealized loss 15.50 USD, debited to the
-  `Revalued` layer by the implicit leg.
+  720 000 JPY weakened (rate 0.0071 → 0.0064), 4 000 HKD firmed a touch
+  (0.1280 → 0.1285), the leftover 600 000 MNT slipped (0.000290 →
+  0.000285); net unrealized loss 505 USD, debited to the `Revalued`
+  layer by the implicit leg.
 
 Append the output to the journal (or include it as a separate file) and
 valued reports become stable:
@@ -176,7 +183,8 @@ personal-ledger use.
 
 ## Status
 
-Early development: skeleton and design done, command not implemented yet.
+Working: sweep, pin, and revaluation generation with golden, invariant,
+and sign-convention tests. Interface may still change.
 
 ## References
 

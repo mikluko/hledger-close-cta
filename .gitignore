@@ -1,3 +1,6 @@
+.*
+!.gitignore
+!.hlint.yaml
 dist-newstyle/
 .ghc.environment.*
 *.hi

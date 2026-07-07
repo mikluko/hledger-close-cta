@@ -1,0 +1,12 @@
+; Long position, rising rate: unrealized gain (credit, negative USD).
+
+account Assets:Broker    ; type:A
+account Income:Gift      ; type:R
+account Equity           ; type:E
+
+P 2024-01-02 XYZ 1.000000 USD
+P 2024-12-30 XYZ 1.500000 USD
+
+2024-06-01 * Gift received
+    Assets:Broker              1000.00 XYZ
+    Income:Gift
